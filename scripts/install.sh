@@ -1,25 +1,13 @@
 #!/bin/bash
-FONT_DIR="/Library/Fonts"
-TMP_DIR="/tmp/poppins-fonts"
+FONT_SRC="$(dirname "$0")/../fonts"   # path to fonts folder relative to scripts folder
+FONT_DST="/Library/Fonts"
 
-mkdir -p "$TMP_DIR"
-
-FONT_URLS=(
-"https://github.com/FKhan706/poppins-intune/raw/refs/heads/main/fonts/Poppins-Black.ttf"
-"https://github.com/FKhan706/poppins-intune/raw/refs/heads/main/fonts/Poppins-Bold.ttf"
-# add the rest of the 18 URLs here
-)
-
-for url in "${FONT_URLS[@]}"; do
-    curl -s -L -o "$TMP_DIR/$(basename $url)" "$url"
+# Copy all .ttf files to system fonts folder
+for font in "$FONT_SRC"/*.ttf; do
+    cp "$font" "$FONT_DST/"
+    chmod 644 "$FONT_DST/$(basename $font)"
+    chown root:wheel "$FONT_DST/$(basename $font)"
 done
 
-for font in "$TMP_DIR"/*.ttf; do
-    cp "$font" "$FONT_DIR/"
-    chmod 644 "$FONT_DIR/$(basename $font)"
-    chown root:wheel "$FONT_DIR/$(basename $font)"
-done
-
-rm -rf "$TMP_DIR"
 echo "Poppins fonts installed successfully."
 exit 0
